@@ -1,0 +1,88 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.jooq:jooq-codegen:3.12.4'
+        classpath 'org.postgresql:postgresql:42.2.10'
+        classpath 'org.glassfish.jaxb:jaxb-runtime:2.4.0-b180830.0438'
+    }
+}
+
+plugins {
+    id 'org.springframework.boot' version '2.7.1'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+group = 'com.example.demo'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '14'
+
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-jooq'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.flywaydb:flyway-core'
+    implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'org.postgresql:postgresql'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+import org.jooq.codegen.GenerationTool
+
+task codeGen {
+    doLast {
+
+        def writer = new StringWriter()
+        def xml = new groovy.xml.MarkupBuilder(writer)
+                .configuration('xmlns': 'http://www.jooq.org/xsd/jooq-codegen-3.12.0.xsd') {
+                    jdbc() {
+                        driver('org.postgresql.Driver')
+                        url('jdbc:postgresql://localhost:5432/LibraryUser?currentschema=public')
+                        user('postgres')
+                        password('Cb18s254774')
+                    }
+                    generator() {
+                        database() {
+                            inputSchema('public')
+                            excludes('flyway_schema_history')
+                        }
+                        generate([:]) {
+                            pojos true
+                            daos true
+                        }
+                        target() {
+                            packageName('com.demo.model')
+                            directory('src/main/java')
+                        }
+                    }
+                }
+        GenerationTool.generate(writer.toString())
+        println 'jOOQ code generated successfully.'
+    }
+}
+
+
