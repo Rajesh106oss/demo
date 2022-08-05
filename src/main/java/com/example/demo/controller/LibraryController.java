@@ -70,14 +70,12 @@ public class LibraryController {
 
     @GetMapping("/books/{bookId}")
     public ResponseEntity<?> getLibraryInfo(@PathVariable Integer bookId) {
-        System.out.println(bookId);
         return libraryRepository.getBookById(bookId).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/books/{bookId}")
     public ResponseEntity<?> deleteBookId(@PathVariable Integer bookId) {
-        System.out.println(bookId);
         return libraryRepository.deleteBookById(bookId).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
