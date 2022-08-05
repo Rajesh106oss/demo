@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class LibraryController {
     private final LibraryRepository libraryRepository;
-    private  CreateLibraryValidator CreateLibraryValidator;
-    private  CreateBookValidator createBookValidator;
+    private final CreateLibraryValidator CreateLibraryValidator;
+    private final CreateBookValidator createBookValidator;
+    private final UpdateLibraryValidator updateLibraryValidator;
 
 
     @PostMapping("/libraries")
@@ -24,14 +25,19 @@ public class LibraryController {
         binder.validate();
         if (binder.getBindingResult().hasErrors())
             return new ResponseEntity<>(binder.getBindingResult().getAllErrors(), HttpStatus.BAD_REQUEST);
-        var library = libraryRepository.createLibrary(libraryInfo);
-        return new ResponseEntity<>(library, HttpStatus.OK);
+        libraryRepository.createLibrary(libraryInfo);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/libraries/{libraryId}")
     public ResponseEntity<?> updateLibrary(@RequestBody UpdateLibraryInfo libraryInfo,
                                            @PathVariable Integer libraryId) {
         libraryInfo.setId(libraryId);
+        var binder = new DataBinder(libraryInfo);
+        binder.setValidator(updateLibraryValidator);
+        binder.validate();
+        if (binder.getBindingResult().hasErrors())
+            return new ResponseEntity<>(binder.getBindingResult().getAllErrors(), HttpStatus.BAD_REQUEST);
         var library = libraryRepository.updateLibrary(libraryInfo);
         return new ResponseEntity<>(library, HttpStatus.OK);
     }
@@ -42,6 +48,11 @@ public class LibraryController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/libraries")
+    public ResponseEntity<?> ListLibraries() {
+        return new ResponseEntity<>(libraryRepository.listLibraries(), HttpStatus.OK);
+    }
+
     @DeleteMapping("/libraries/{libraryId}")
     public ResponseEntity<?> deleteLibrary(@PathVariable Integer libraryId) {
         return libraryRepository.deleteLibrary(libraryId).map(ResponseEntity::ok)
@@ -49,10 +60,10 @@ public class LibraryController {
     }
 
     @PostMapping("/libraries/books")
-    public ResponseEntity<?> createLibraryBooks(@RequestBody LibraryCreationInfo libraryInfo) {
+    public ResponseEntity<?> createLibraryBooks(@RequestBody CreateBookInfo libraryInfo) {
         final var binder = new DataBinder(libraryInfo);
-       binder.setValidator(CreateBookValidator);
-       binder.validate();
+        binder.setValidator(createBookValidator);
+        binder.validate();
         if (binder.getBindingResult().hasErrors())
             return new ResponseEntity<>(binder.getBindingResult().getAllErrors(), HttpStatus.BAD_REQUEST);
         var library = libraryRepository.createLibraryBooks(libraryInfo);
@@ -70,8 +81,6 @@ public class LibraryController {
         return libraryRepository.deleteBooksById(booksId).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-
-
 }
 
 

@@ -11,7 +11,6 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateLibraryInfo {
-
     private String name;
     private OffsetDateTime createdAt;
 }

@@ -3,15 +3,15 @@ package com.example.demo.repository;
 import com.example.demo.model.tables.LibraryBooks;
 import com.example.demo.model.tables.LibraryUser;
 import com.example.demo.model.tables.records.LibraryBooksRecord;
-import com.example.demo.model.tables.records.LibraryUserRecord;
+import com.example.demo.validator.CreateBookInfo;
 import com.example.demo.validator.CreateLibraryInfo;
-import com.example.demo.validator.LibraryCreationInfo;
 import com.example.demo.validator.UpdateLibraryInfo;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static com.example.demo.model.Tables.LIBRARY_BOOKS;
@@ -23,11 +23,10 @@ public class LibraryRepository {
     private final DSLContext db;
 
 
-    public LibraryUser createLibrary(CreateLibraryInfo libraryInfo){
-        var record= db.newRecord(LIBRARY_USER, new LibraryUserRecord
-                (libraryInfo.getName(),OffsetDateTime.now()));
-        record.store();
-        return record.into(LibraryUser.class);
+    public void createLibrary(CreateLibraryInfo libraryInfo) {
+        db.insertInto(LIBRARY_USER, LIBRARY_USER.NAME, LIBRARY_USER.CREATED_AT)
+                .values(libraryInfo.getName(), OffsetDateTime.now())
+                .execute();
     }
 
     public LibraryUser updateLibrary(UpdateLibraryInfo libraryInfo) {
@@ -58,10 +57,9 @@ public class LibraryRepository {
     }
 
 
-    public LibraryBooks createLibraryBooks(LibraryCreationInfo libraryInfo) {
+    public LibraryBooks createLibraryBooks(CreateBookInfo bookInfo) {
         var record = db.newRecord(LIBRARY_BOOKS, new LibraryBooksRecord(null,
-                libraryInfo.getName(), libraryInfo.getAuthorName(),
-                OffsetDateTime.now()));
+                bookInfo.getName(), bookInfo.getAuthorName(), bookInfo.getLibraryId(), OffsetDateTime.now()));
         record.store();
         return record.into(LibraryBooks.class);
     }
@@ -78,6 +76,10 @@ public class LibraryRepository {
                 .where(LIBRARY_BOOKS.ID.eq(booksId))
                 .execute();
         return Optional.empty();
+    }
+
+    public List<com.example.demo.model.tables.pojos.LibraryUser> listLibraries() {
+        return db.selectFrom(LIBRARY_USER).fetchInto(com.example.demo.model.tables.pojos.LibraryUser.class);
     }
 }
 

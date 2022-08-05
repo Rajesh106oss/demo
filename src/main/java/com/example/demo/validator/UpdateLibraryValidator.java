@@ -1,17 +1,18 @@
 package com.example.demo.validator;
 
 import com.example.demo.model.tables.LibraryUser;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
+import com.example.demo.repository.LibraryRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+@Component
+@RequiredArgsConstructor
 public class UpdateLibraryValidator implements Validator {
-
-    private MessageSource messageSource;
-
+    private final LibraryRepository libraryRepository;
 
     @Override
     public boolean supports(@NonNull Class<?> clazz) {
@@ -20,15 +21,17 @@ public class UpdateLibraryValidator implements Validator {
 
     @Override
     public void validate(@NonNull Object target, @NonNull Errors errors) {
-        UpdateLibraryInfo libraries = (UpdateLibraryInfo) target;
-        var locale = LocaleContextHolder.getLocale();
+        UpdateLibraryInfo updateLibraryInfo = (UpdateLibraryInfo) target;
         final var FieldId = "id";
         final var FieldName = "name";
-        ValidationUtils.rejectIfEmpty(errors,FieldId,"Library Id is empty",
-                messageSource.getMessage("library.id.empty", null, locale));
-        if (errors.hasErrors())return;
-            ValidationUtils.rejectIfEmpty(errors, FieldName, "Library.name.notBlank");
-        if (!(libraries.getName().length() > 4 && libraries.getName().length() < 30))
+        ValidationUtils.rejectIfEmpty(errors, FieldId, "Library Id is empty");
+        if (errors.hasErrors()) return;
+        ValidationUtils.rejectIfEmpty(errors, FieldName, "Library name is empty");
+        if (!(updateLibraryInfo.getName().length() > 4 && updateLibraryInfo.getName().length() < 30))
             errors.rejectValue(FieldName, "Invalid Library Name");
+        if (errors.hasErrors()) return;
+        var validLibraryId = libraryRepository.getLibraryById(updateLibraryInfo.getId());
+        if (validLibraryId.isEmpty())
+            errors.rejectValue("libraryId", "Please provide valid libraryId");
     }
 }

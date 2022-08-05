@@ -10,9 +10,7 @@ import java.time.OffsetDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LibraryCreationInfo {
-
-    private Integer id;
+public class CreateBookInfo {
     private String name;
     private String authorName;
     private Integer libraryId;
