@@ -11,10 +11,8 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateLibraryInfo {
+
     private String name;
-    private String author;
-    private String publishedBy;
-    private OffsetDateTime releasedAt;
-    private Integer price;
     private OffsetDateTime createdAt;
 }
+

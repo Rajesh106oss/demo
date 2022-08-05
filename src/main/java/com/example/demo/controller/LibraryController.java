@@ -1,30 +1,26 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.tables.pojos.Libraryuser;
 import com.example.demo.repository.LibraryRepository;
-import com.example.demo.validator.CreateLibraryInfo;
-import com.example.demo.validator.CreateValidator;
-import com.example.demo.validator.UpdateLibraryInfo;
+import com.example.demo.validator.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-
+@RequestMapping()
 @RestController
 @RequiredArgsConstructor
 public class LibraryController {
     private final LibraryRepository libraryRepository;
-    private final CreateValidator createValidator;
+    private  CreateLibraryValidator CreateLibraryValidator;
+    private  CreateBookValidator createBookValidator;
 
 
     @PostMapping("/libraries")
     public ResponseEntity<?> createLibrary(@RequestBody CreateLibraryInfo libraryInfo) {
-        DataBinder binder = new DataBinder(libraryInfo);
-        binder.setValidator(createValidator);
+        final var binder = new DataBinder(libraryInfo);
+        binder.setValidator(CreateLibraryValidator);
         binder.validate();
         if (binder.getBindingResult().hasErrors())
             return new ResponseEntity<>(binder.getBindingResult().getAllErrors(), HttpStatus.BAD_REQUEST);
@@ -46,16 +42,37 @@ public class LibraryController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/libraries")
-    public ResponseEntity<List<Libraryuser>> listLibraries() {
-        return new ResponseEntity<>(libraryRepository.listLibraries(), HttpStatus.OK);
-    }
-
     @DeleteMapping("/libraries/{libraryId}")
     public ResponseEntity<?> deleteLibrary(@PathVariable Integer libraryId) {
         return libraryRepository.deleteLibrary(libraryId).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @PostMapping("/libraries/books")
+    public ResponseEntity<?> createLibraryBooks(@RequestBody LibraryCreationInfo libraryInfo) {
+        final var binder = new DataBinder(libraryInfo);
+       binder.setValidator(CreateBookValidator);
+       binder.validate();
+        if (binder.getBindingResult().hasErrors())
+            return new ResponseEntity<>(binder.getBindingResult().getAllErrors(), HttpStatus.BAD_REQUEST);
+        var library = libraryRepository.createLibraryBooks(libraryInfo);
+        return new ResponseEntity<>(library, HttpStatus.OK);
+    }
+
+    @GetMapping("libraries/{booksId}")
+    public ResponseEntity<?> getLibraryInfo(@PathVariable Integer booksId) {
+        return libraryRepository.getBooksById(booksId).map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/libraries/{booksId}")
+    public ResponseEntity<?> deleteBooksId(@PathVariable Integer booksId) {
+        return libraryRepository.deleteBooksById(booksId).map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+
 }
+
 
 

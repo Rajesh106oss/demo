@@ -30,6 +30,11 @@ configurations {
     }
 }
 
+ext {
+    set('springCloudVersion', "Hoxton.SR3")
+    eventuateTramVersion = '0.26.1.RELEASE'
+    eventuateTramSagasVersion = '0.15.2.RELEASE'
+}
 repositories {
     mavenCentral()
     jcenter()
@@ -40,6 +45,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.flywaydb:flyway-core'
     implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+    implementation 'org.projectlombok:lombok:1.18.16'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'
@@ -61,7 +67,7 @@ task codeGen {
                 .configuration('xmlns': 'http://www.jooq.org/xsd/jooq-codegen-3.12.0.xsd') {
                     jdbc() {
                         driver('org.postgresql.Driver')
-                        url('jdbc:postgresql://localhost:5432/LibraryUser?currentschema=public')
+                        url('jdbc:postgresql://localhost:5432/LibraryManagement?currentschema=public')
                         user('postgres')
                         password('Cb18s254774')
                     }
@@ -75,7 +81,7 @@ task codeGen {
                             daos true
                         }
                         target() {
-                            packageName('com.demo.model')
+                            packageName('com.example.demo.model')
                             directory('src/main/java')
                         }
                     }
