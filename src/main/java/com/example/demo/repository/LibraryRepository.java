@@ -49,7 +49,6 @@ public class LibraryRepository {
         return db.selectFrom(LIBRARY_USER).fetchInto(com.example.demo.model.tables.pojos.LibraryUser.class);
     }
 
-
     public Optional<LibraryUser> deleteLibrary(Integer libraryId) {
         var isValidLibraryUser = getLibraryById(libraryId);
         if (isValidLibraryUser.isPresent()) {
@@ -60,7 +59,6 @@ public class LibraryRepository {
         } else
             return Optional.empty();
     }
-
 
     public LibraryBooks createLibraryBooks(CreateBookInfo bookInfo) {
         var record = db.newRecord(LIBRARY_BOOKS, new LibraryBooksRecord(null,
@@ -75,14 +73,11 @@ public class LibraryRepository {
                 .fetchOptionalInto(LibraryBooks.class);
     }
 
-
     public Optional<LibraryBooks> deleteBooksById(Integer booksId) {
         db.deleteFrom(LIBRARY_BOOKS)
                 .where(LIBRARY_BOOKS.ID.eq(booksId))
                 .execute();
         return Optional.empty();
     }
-
-
 }
 

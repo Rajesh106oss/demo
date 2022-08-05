@@ -53,11 +53,7 @@ public class LibraryBooksTest {
     @DisplayName("Update Library")
     void updateLibrary() throws Exception {
         var createLibraryInfo = new CreateLibraryInfo("AvLibrary", null);
-        createLibrary(createLibraryInfo, status().isOk());
-        var libraryId = JsonPath.parse(mockMvc.perform(post("/v1/libraries")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(createLibraryInfo)))
-                .andReturn().getResponse().getContentAsString()).read("id", Integer.class);
+        var libraryId = storeAndGetLibraryId(createLibraryInfo);
         var updateLibraryInfo = new UpdateLibraryInfo(null, "SkLibrary", null);
         updateLibrary(updateLibraryInfo, libraryId, status().isOk());
         updateLibraryInfo.setName("av");
@@ -68,18 +64,56 @@ public class LibraryBooksTest {
         updateLibrary(updateLibraryInfo, 0, status().isBadRequest());
     }
 
-    @Test
-    @DisplayName("Get Library")
-    void GetLibraryInfo() throws Exception {
-        getLibraryInfo(1, status().isOk());
-        getLibraryInfo(0, status().isBadRequest());
-    }
-
     public void updateLibrary(UpdateLibraryInfo library, Integer libraryId, ResultMatcher status)
             throws Exception {
         mockMvc.perform(put("/v1/libraries/" + libraryId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(library)))
+                .andExpect(status)
+                .andDo(print());
+    }
+
+    private Integer storeAndGetLibraryId(CreateLibraryInfo createLibraryInfo) throws Exception {
+        return JsonPath.parse(mockMvc.perform(post("/v1/libraries")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(createLibraryInfo)))
+                .andReturn().getResponse().getContentAsString()).read("id", Integer.class);
+    }
+
+    @Test
+    @DisplayName("List Libraries")
+    void listLibraries() throws Exception {
+        mockMvc.perform(get("/v1/libraries"))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("Get Library")
+    void GetLibraryInfo() throws Exception {
+        var createLibraryInfo = new CreateLibraryInfo("AvLibrary", null);
+        var libraryId = storeAndGetLibraryId(createLibraryInfo);
+        getLibraryInfo(libraryId, status().isOk());
+        getLibraryInfo(0, status().isBadRequest());
+    }
+
+    private void getLibraryInfo(Integer libraryId, ResultMatcher status) throws Exception {
+        mockMvc.perform(get("/v1/libraries/" + libraryId))
+                .andExpect(status)
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("Delete Library")
+    void deleteLibrary() throws Exception {
+        var createLibraryInfo = new CreateLibraryInfo("AvLibrary", null);
+        var libraryId = storeAndGetLibraryId(createLibraryInfo);
+        deleteLibrary(libraryId, status().isOk());
+        deleteLibrary(libraryId, status().isNotFound());
+    }
+
+    private void deleteLibrary(Integer libraryId, ResultMatcher status) throws Exception {
+        mockMvc.perform(delete("/v1/libraries/" + libraryId))
                 .andExpect(status)
                 .andDo(print());
     }
@@ -98,14 +132,6 @@ public class LibraryBooksTest {
         mockMvc.perform(post("/v1/libraries/books")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(libraryBooks)))
-                .andExpect(status)
-                .andDo(print());
-    }
-
-    private void getLibraryInfo(Integer libraryId, ResultMatcher status) throws Exception {
-        mockMvc.perform(get("/v1/libraries/libraryId")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(libraryId)))
                 .andExpect(status)
                 .andDo(print());
     }

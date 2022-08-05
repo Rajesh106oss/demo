@@ -17,7 +17,6 @@ public class LibraryController {
     private final CreateBookValidator createBookValidator;
     private final UpdateLibraryValidator updateLibraryValidator;
 
-
     @PostMapping("/libraries")
     public ResponseEntity<?> createLibrary(@RequestBody CreateLibraryInfo libraryInfo) {
         final var binder = new DataBinder(libraryInfo);
