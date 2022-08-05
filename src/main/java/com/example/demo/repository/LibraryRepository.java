@@ -23,10 +23,11 @@ public class LibraryRepository {
     private final DSLContext db;
 
 
-    public void createLibrary(CreateLibraryInfo libraryInfo) {
-        db.insertInto(LIBRARY_USER, LIBRARY_USER.NAME, LIBRARY_USER.CREATED_AT)
+    public com.example.demo.model.tables.pojos.LibraryUser createLibrary(CreateLibraryInfo libraryInfo) {
+        return db.insertInto(LIBRARY_USER, LIBRARY_USER.NAME, LIBRARY_USER.CREATED_AT)
                 .values(libraryInfo.getName(), OffsetDateTime.now())
-                .execute();
+                .returning()
+                .fetchOne().into(com.example.demo.model.tables.pojos.LibraryUser.class);
     }
 
     public LibraryUser updateLibrary(UpdateLibraryInfo libraryInfo) {

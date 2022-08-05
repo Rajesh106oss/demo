@@ -135,4 +135,46 @@ public class LibraryBooksTest {
                 .andExpect(status)
                 .andDo(print());
     }
+
+    @Test
+    @DisplayName("Get Books")
+    void GetBooksId() throws Exception {
+        var info = new CreateBookInfo(null, null, null, null);
+        var bookId = storeAndGetBookId(info);
+        getBooksId(bookId, status().isOk());
+        getBooksId(0, status().isBadRequest());
+    }
+
+    private Integer storeAndGetBookId(CreateBookInfo info) throws Exception {
+        return JsonPath.parse(mockMvc.perform(post("/v1/libraries/books")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(info)))
+                .andReturn().getResponse().getContentAsString()).read("id", Integer.class);
+    }
+
+    private void getBooksId(Integer booksId, ResultMatcher status) throws Exception {
+        mockMvc.perform(get("/v1/libraries" + booksId))
+                .andExpect(status)
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("Delete Books")
+    void deleteBooks() throws Exception {
+        var createBookInfo = new CreateBookInfo("RkBooks", "ANR", null, null);
+        Integer booksId = storeAndGetBookId(createBookInfo);
+        deleteBooks(booksId, status().isOk());
+        deleteBooks(booksId, status().isNotFound());
+    }
+
+    public void deleteBooks(Integer booksId, ResultMatcher status) throws Exception {
+        mockMvc.perform(delete("/v1/libraries/" + booksId))
+                .andExpect(status)
+                .andDo(print());
+    }
 }
+
+
+
+
+

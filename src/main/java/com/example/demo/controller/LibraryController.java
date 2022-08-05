@@ -24,8 +24,7 @@ public class LibraryController {
         binder.validate();
         if (binder.getBindingResult().hasErrors())
             return new ResponseEntity<>(binder.getBindingResult().getAllErrors(), HttpStatus.BAD_REQUEST);
-        libraryRepository.createLibrary(libraryInfo);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(libraryRepository.createLibrary(libraryInfo), HttpStatus.OK);
     }
 
     @PutMapping("/libraries/{libraryId}")
