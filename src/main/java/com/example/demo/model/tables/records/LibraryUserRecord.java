@@ -5,13 +5,15 @@ package com.example.demo.model.tables.records;
 
 
 import com.example.demo.model.tables.LibraryUser;
+
+import java.time.OffsetDateTime;
+
+import javax.annotation.processing.Generated;
+
 import org.jooq.Field;
 import org.jooq.Record3;
 import org.jooq.Row3;
 import org.jooq.impl.TableRecordImpl;
-
-import javax.annotation.processing.Generated;
-import java.time.OffsetDateTime;
 
 
 /**

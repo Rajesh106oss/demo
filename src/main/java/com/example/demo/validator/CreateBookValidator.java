@@ -22,11 +22,12 @@ public class CreateBookValidator implements Validator {
         CreateBookInfo createBookInfo = (CreateBookInfo) target;
         final var fieldName = "name";
         ValidationUtils.rejectIfEmpty(errors, fieldName, "Books.name.notBlank");
+        if (errors.hasErrors()) return;
         if (!(createBookInfo.getName().length() > 2 && createBookInfo.getName().length() < 20))
             errors.rejectValue(fieldName, "Invalid Book Name");
         if (errors.hasErrors()) return;
-        var validBookId = libraryRepository.getBookById(createBookInfo.getLibraryId());
-        if (validBookId.isEmpty())
-            errors.rejectValue("libraryId", "Please provide valid bookId");
+        var optionalLibraryUser = libraryRepository.getLibraryById(createBookInfo.getLibraryId());
+        if (optionalLibraryUser.isEmpty())
+            errors.rejectValue("libraryId", "Please provide valid libraryId");
     }
 }

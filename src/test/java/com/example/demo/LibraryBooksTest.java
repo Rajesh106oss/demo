@@ -98,7 +98,7 @@ public class LibraryBooksTest {
         var createLibraryInfo = new CreateLibraryInfo("AvLibrary", null);
         var libraryId = storeAndGetLibraryId(createLibraryInfo);
         getLibraryInfo(libraryId, status().isOk());
-        getLibraryInfo(0, status().isBadRequest());
+        getLibraryInfo(0, status().isNotFound());
     }
 
     private void getLibraryInfo(Integer libraryId, ResultMatcher status) throws Exception {
@@ -126,10 +126,12 @@ public class LibraryBooksTest {
     @Test
     @DisplayName("Create Library Book")
     void CreateLibraryBook() throws Exception {
-        var libraries = new CreateBookInfo("RkBooks", "ANR", null, null);
-        createLibraryBook(libraries, status().isOk());
-      /*  libraries.setName("av");
-        createLibraryBook(libraries, status().isBadRequest());*/
+        var createLibraryInfo = new CreateLibraryInfo("Rajesh Library", null);
+        var libraryId = storeAndGetLibraryId(createLibraryInfo);
+        var createBookInfo = new CreateBookInfo("RkBooks", "ANR", libraryId, null);
+        createLibraryBook(createBookInfo, status().isOk());
+        createBookInfo.setName("av");
+        createLibraryBook(createBookInfo, status().isBadRequest());
     }
 
     public void createLibraryBook(CreateBookInfo libraryBooks, ResultMatcher status)
@@ -144,21 +146,24 @@ public class LibraryBooksTest {
     @Test
     @DisplayName("Get Book")
     void GetBookId() throws Exception {
-        var info = new CreateBookInfo(null, null, null, null);
+        var createLibraryInfo = new CreateLibraryInfo("Rajesh Library", null);
+        var libraryId = storeAndGetLibraryId(createLibraryInfo);
+        var info = new CreateBookInfo("book", "author", libraryId, null);
         var bookId = storeAndGetBookId(info);
         getBookId(bookId, status().isOk());
-        getBookId(0, status().isBadRequest());
+        getBookId(0, status().isNotFound());
     }
 
     private Integer storeAndGetBookId(CreateBookInfo info) throws Exception {
         return JsonPath.parse(mockMvc.perform(post("/v1/libraries/books")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(info)))
+                .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString()).read("id", Integer.class);
     }
 
     private void getBookId(Integer bookId, ResultMatcher status) throws Exception {
-        mockMvc.perform(get("/v1/libraries" + bookId))
+        mockMvc.perform(get("/v1/books/" + bookId))
                 .andExpect(status)
                 .andDo(print());
     }
@@ -166,14 +171,16 @@ public class LibraryBooksTest {
     @Test
     @DisplayName("Delete Book")
     void deleteBook() throws Exception {
-        var createBookInfo = new CreateBookInfo("RkBooks", "ANR", null, null);
+        var createLibraryInfo = new CreateLibraryInfo("Rajesh Library", null);
+        var libraryId = storeAndGetLibraryId(createLibraryInfo);
+        var createBookInfo = new CreateBookInfo("RkBooks", "ANR", libraryId, null);
         Integer bookId = storeAndGetBookId(createBookInfo);
         deleteBook(bookId, status().isOk());
         deleteBook(bookId, status().isNotFound());
     }
 
     public void deleteBook(Integer bookId, ResultMatcher status) throws Exception {
-        mockMvc.perform(delete("/v1/libraries/" + bookId))
+        mockMvc.perform(delete("/v1/books/" + bookId))
                 .andExpect(status)
                 .andDo(print());
     }

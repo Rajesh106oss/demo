@@ -38,7 +38,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LibraryUser extends TableImpl<LibraryUserRecord> {
 
-    private static final long serialVersionUID = -833134509;
+    private static final long serialVersionUID = 1595906834;
 
     /**
      * The reference instance of <code>public.library_user</code>
@@ -66,7 +66,7 @@ public class LibraryUser extends TableImpl<LibraryUserRecord> {
     /**
      * The column <code>public.library_user.created_at</code>.
      */
-    public final TableField<LibraryUserRecord, OffsetDateTime> CREATED_AT = createField(DSL.name("created_at"), org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE.nullable(false), this, "");
+    public final TableField<LibraryUserRecord, OffsetDateTime> CREATED_AT = createField(DSL.name("created_at"), org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE, this, "");
 
     /**
      * Create a <code>public.library_user</code> table reference

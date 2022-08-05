@@ -26,11 +26,12 @@ public class UpdateLibraryValidator implements Validator {
         ValidationUtils.rejectIfEmpty(errors, FieldId, "Library Id is empty");
         if (errors.hasErrors()) return;
         ValidationUtils.rejectIfEmpty(errors, FieldName, "Library name is empty");
+        if (errors.hasErrors()) return;
         if (!(updateLibraryInfo.getName().length() > 4 && updateLibraryInfo.getName().length() < 30))
             errors.rejectValue(FieldName, "Invalid Library Name");
         if (errors.hasErrors()) return;
         var validLibraryId = libraryRepository.getLibraryById(updateLibraryInfo.getId());
         if (validLibraryId.isEmpty())
-            errors.rejectValue("libraryId", "Please provide valid libraryId");
+            errors.rejectValue("id", "Please provide valid libraryId");
     }
 }

@@ -75,10 +75,14 @@ public class LibraryRepository {
     }
 
     public Optional<LibraryBooks> deleteBookById(Integer bookId) {
-        db.deleteFrom(LIBRARY_BOOKS)
-                .where(LIBRARY_BOOKS.ID.eq(bookId))
-                .execute();
-        return Optional.empty();
+        var validBook = getBookById(bookId);
+        if (validBook.isPresent()) {
+            db.deleteFrom(LIBRARY_BOOKS)
+                    .where(LIBRARY_BOOKS.ID.eq(bookId))
+                    .execute();
+            return validBook;
+        } else
+            return Optional.empty();
     }
 }
 
