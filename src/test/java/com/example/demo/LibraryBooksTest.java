@@ -137,12 +137,12 @@ public class LibraryBooksTest {
     }
 
     @Test
-    @DisplayName("Get Books")
-    void GetBooksId() throws Exception {
+    @DisplayName("Get Book")
+    void GetBookId() throws Exception {
         var info = new CreateBookInfo(null, null, null, null);
         var bookId = storeAndGetBookId(info);
-        getBooksId(bookId, status().isOk());
-        getBooksId(0, status().isBadRequest());
+        getBookId(bookId, status().isOk());
+        getBookId(0, status().isBadRequest());
     }
 
     private Integer storeAndGetBookId(CreateBookInfo info) throws Exception {
@@ -152,23 +152,23 @@ public class LibraryBooksTest {
                 .andReturn().getResponse().getContentAsString()).read("id", Integer.class);
     }
 
-    private void getBooksId(Integer booksId, ResultMatcher status) throws Exception {
-        mockMvc.perform(get("/v1/libraries" + booksId))
+    private void getBookId(Integer bookId, ResultMatcher status) throws Exception {
+        mockMvc.perform(get("/v1/libraries" + bookId))
                 .andExpect(status)
                 .andDo(print());
     }
 
     @Test
-    @DisplayName("Delete Books")
-    void deleteBooks() throws Exception {
+    @DisplayName("Delete Book")
+    void deleteBook() throws Exception {
         var createBookInfo = new CreateBookInfo("RkBooks", "ANR", null, null);
-        Integer booksId = storeAndGetBookId(createBookInfo);
-        deleteBooks(booksId, status().isOk());
-        deleteBooks(booksId, status().isNotFound());
+        Integer bookId = storeAndGetBookId(createBookInfo);
+        deleteBook(bookId, status().isOk());
+        deleteBook(bookId, status().isNotFound());
     }
 
-    public void deleteBooks(Integer booksId, ResultMatcher status) throws Exception {
-        mockMvc.perform(delete("/v1/libraries/" + booksId))
+    public void deleteBook(Integer bookId, ResultMatcher status) throws Exception {
+        mockMvc.perform(delete("/v1/libraries/" + bookId))
                 .andExpect(status)
                 .andDo(print());
     }

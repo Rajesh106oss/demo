@@ -68,15 +68,15 @@ public class LibraryRepository {
         return record.into(LibraryBooks.class);
     }
 
-    public Optional<LibraryBooks> getBooksById(Integer booksId) {
+    public Optional<LibraryBooks> getBookById(Integer bookId) {
         return db.selectFrom(LIBRARY_BOOKS)
-                .where(LIBRARY_BOOKS.ID.eq(booksId))
+                .where(LIBRARY_BOOKS.ID.eq(bookId))
                 .fetchOptionalInto(LibraryBooks.class);
     }
 
-    public Optional<LibraryBooks> deleteBooksById(Integer booksId) {
+    public Optional<LibraryBooks> deleteBookById(Integer bookId) {
         db.deleteFrom(LIBRARY_BOOKS)
-                .where(LIBRARY_BOOKS.ID.eq(booksId))
+                .where(LIBRARY_BOOKS.ID.eq(bookId))
                 .execute();
         return Optional.empty();
     }

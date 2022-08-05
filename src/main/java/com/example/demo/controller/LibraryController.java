@@ -68,15 +68,15 @@ public class LibraryController {
         return new ResponseEntity<>(library, HttpStatus.OK);
     }
 
-    @GetMapping("libraries/{booksId}")
-    public ResponseEntity<?> getLibraryInfo(@PathVariable Integer booksId) {
-        return libraryRepository.getBooksById(booksId).map(ResponseEntity::ok)
+    @GetMapping("libraries/{bookId}")
+    public ResponseEntity<?> getLibraryInfo(@PathVariable Integer bookId) {
+        return libraryRepository.getBookById(bookId).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/libraries/{booksId}")
-    public ResponseEntity<?> deleteBooksId(@PathVariable Integer booksId) {
-        return libraryRepository.deleteBooksById(booksId).map(ResponseEntity::ok)
+    @DeleteMapping("/libraries/{bookId}")
+    public ResponseEntity<?> deleteBookId(@PathVariable Integer bookId) {
+        return libraryRepository.deleteBookById(bookId).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 }
