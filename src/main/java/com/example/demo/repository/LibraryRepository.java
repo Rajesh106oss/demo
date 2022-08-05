@@ -45,6 +45,11 @@ public class LibraryRepository {
                 .fetchOptionalInto(LibraryUser.class);
     }
 
+    public List<com.example.demo.model.tables.pojos.LibraryUser> listLibraries() {
+        return db.selectFrom(LIBRARY_USER).fetchInto(com.example.demo.model.tables.pojos.LibraryUser.class);
+    }
+
+
     public Optional<LibraryUser> deleteLibrary(Integer libraryId) {
         var isValidLibraryUser = getLibraryById(libraryId);
         if (isValidLibraryUser.isPresent()) {
@@ -78,8 +83,6 @@ public class LibraryRepository {
         return Optional.empty();
     }
 
-    public List<com.example.demo.model.tables.pojos.LibraryUser> listLibraries() {
-        return db.selectFrom(LIBRARY_USER).fetchInto(com.example.demo.model.tables.pojos.LibraryUser.class);
-    }
+
 }
 

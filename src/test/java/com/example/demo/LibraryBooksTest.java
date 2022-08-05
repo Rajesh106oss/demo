@@ -34,7 +34,7 @@ public class LibraryBooksTest {
     @Test
     @DisplayName("Create Library")
     void createLibrary() throws Exception {
-        var library = new CreateLibraryInfo("AvLibrary",null);
+        var library = new CreateLibraryInfo("AvLibrary", null);
         createLibrary(library, status().isOk());
         library.setName("av");
         createLibrary(library, status().isBadRequest());
@@ -52,7 +52,7 @@ public class LibraryBooksTest {
     @Test
     @DisplayName("Update Library")
     void updateLibrary() throws Exception {
-        var createLibraryInfo = new CreateLibraryInfo("AvLibrary",null);
+        var createLibraryInfo = new CreateLibraryInfo("AvLibrary", null);
         createLibrary(createLibraryInfo, status().isOk());
         var libraryId = JsonPath.parse(mockMvc.perform(post("/v1/libraries")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -87,7 +87,7 @@ public class LibraryBooksTest {
     @Test
     @DisplayName("Create Library Book")
     void CreateLibraryBook() throws Exception {
-        var libraries = new CreateBookInfo("RkBooks", "ANR",null,null);
+        var libraries = new CreateBookInfo("RkBooks", "ANR", null, null);
         createLibraryBook(libraries, status().isOk());
         libraries.setName("av");
         createLibraryBook(libraries, status().isBadRequest());
@@ -109,5 +109,4 @@ public class LibraryBooksTest {
                 .andExpect(status)
                 .andDo(print());
     }
-
 }

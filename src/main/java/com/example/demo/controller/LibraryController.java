@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping()
+@RequestMapping("/v1")
 @RestController
 @RequiredArgsConstructor
 public class LibraryController {
