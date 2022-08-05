@@ -1,6 +1,5 @@
 package com.example.demo.validator;
 
-import com.example.demo.model.tables.LibraryUser;
 import com.example.demo.repository.LibraryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
@@ -16,7 +15,7 @@ public class UpdateLibraryValidator implements Validator {
 
     @Override
     public boolean supports(@NonNull Class<?> clazz) {
-        return LibraryUser.class.equals(clazz);
+        return UpdateLibraryInfo.class.equals(clazz);
     }
 
     @Override

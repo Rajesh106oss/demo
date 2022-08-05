@@ -58,23 +58,23 @@ public class LibraryController {
     }
 
     @PostMapping("/libraries/books")
-    public ResponseEntity<?> createLibraryBooks(@RequestBody CreateBookInfo libraryInfo) {
+    public ResponseEntity<?> createLibraryBook(@RequestBody CreateBookInfo libraryInfo) {
         final var binder = new DataBinder(libraryInfo);
         binder.setValidator(createBookValidator);
         binder.validate();
         if (binder.getBindingResult().hasErrors())
             return new ResponseEntity<>(binder.getBindingResult().getAllErrors(), HttpStatus.BAD_REQUEST);
-        var library = libraryRepository.createLibraryBooks(libraryInfo);
+        var library = libraryRepository.createLibraryBook(libraryInfo);
         return new ResponseEntity<>(library, HttpStatus.OK);
     }
 
-    @GetMapping("libraries/{bookId}")
+    @GetMapping("books/{bookId}")
     public ResponseEntity<?> getLibraryInfo(@PathVariable Integer bookId) {
         return libraryRepository.getBookById(bookId).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/libraries/{bookId}")
+    @DeleteMapping("/books/{bookId}")
     public ResponseEntity<?> deleteBookId(@PathVariable Integer bookId) {
         return libraryRepository.deleteBookById(bookId).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

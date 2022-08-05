@@ -1,7 +1,7 @@
 package com.example.demo.repository;
 
-import com.example.demo.model.tables.LibraryBooks;
-import com.example.demo.model.tables.LibraryUser;
+import com.example.demo.model.tables.pojos.LibraryBooks;
+import com.example.demo.model.tables.pojos.LibraryUser;
 import com.example.demo.model.tables.records.LibraryBooksRecord;
 import com.example.demo.validator.CreateBookInfo;
 import com.example.demo.validator.CreateLibraryInfo;
@@ -61,7 +61,7 @@ public class LibraryRepository {
             return Optional.empty();
     }
 
-    public LibraryBooks createLibraryBooks(CreateBookInfo bookInfo) {
+    public LibraryBooks createLibraryBook(CreateBookInfo bookInfo) {
         var record = db.newRecord(LIBRARY_BOOKS, new LibraryBooksRecord(null,
                 bookInfo.getName(), bookInfo.getAuthorName(), bookInfo.getLibraryId(), OffsetDateTime.now()));
         record.store();

@@ -1,6 +1,5 @@
 package com.example.demo.validator;
 
-import com.example.demo.model.tables.LibraryUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -13,7 +12,7 @@ import org.springframework.validation.Validator;
 public class CreateLibraryValidator implements Validator {
     @Override
     public boolean supports(@NonNull Class<?> clazz) {
-        return LibraryUser.class.equals(clazz);
+        return CreateLibraryInfo.class.equals(clazz);
     }
 
     @Override
