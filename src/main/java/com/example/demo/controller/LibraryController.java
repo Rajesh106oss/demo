@@ -19,11 +19,11 @@ public class LibraryController {
 
     @PostMapping("/libraries")
     public ResponseEntity<?> createLibrary(@RequestBody CreateLibraryInfo libraryInfo) {
-        final var binder = new DataBinder(libraryInfo);
+        /*final var binder = new DataBinder(libraryInfo);
         binder.setValidator(CreateLibraryValidator);
         binder.validate();
         if (binder.getBindingResult().hasErrors())
-            return new ResponseEntity<>(binder.getBindingResult().getAllErrors(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(binder.getBindingResult().getAllErrors(), HttpStatus.BAD_REQUEST);*/
         return new ResponseEntity<>(libraryRepository.createLibrary(libraryInfo), HttpStatus.OK);
     }
 
